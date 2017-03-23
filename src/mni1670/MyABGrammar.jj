@@ -3,34 +3,34 @@
  */
 options
 {
-  LOOKAHEAD= 2; // (default 1)
+  LOOKAHEAD= 1; // (default 1)
+
 
   static = false;
 }
 
 PARSER_BEGIN(MyABGrammar)
 package mni1670;
-import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
 
 public class MyABGrammar
 {
   public static void main(String args []) throws ParseException
   {
     try
-    {
+    {      
       MyABGrammar parser = new MyABGrammar(new FileInputStream("text.txt"));
+
       while (true)
       {
-        System.out.println("Reading from standard input...");
+        System.out.println("Reading ...");
         try
         {
           parser.s();
         }
         catch (Exception e)
         {
-          System.out.println("N.OK.");
+          System.out.println("Could not parse input.");
           System.out.println(e.getMessage());
           break;
         }
@@ -43,7 +43,8 @@ public class MyABGrammar
       }
     }
     catch (Exception ex)
-    {
+    {      
+      System.out.println("Something went wrong: " + ex.getMessage());
     }	
   }
 }
@@ -56,6 +57,17 @@ SKIP :
 | "\r"
 | "\t"
 | "\n"
+| < "//" (~[ "\n", "\r" ])*
+    (
+      "\n"
+    | "\r"
+    | "\r\n"
+    ) >
+| < "/*" (~[ "*" ])* "*"
+    (
+      ~[ "/" ] (~[ "*" ])* "*"
+    )*
+    "/" >
 }
 
 TOKEN : /* OPERATORS */
@@ -64,10 +76,13 @@ TOKEN : /* OPERATORS */
 | < B : "1" >
 }
 
+// VT = { *, 1 }
+// VN = { S,A, B }
+// S - > a | aB
+// B - > b | bB
 void s() :
 {}
-{
-  < A > [ b() ] < EOF >
+{      < A >  [ b() ]  < EOF >
 }
 
 void b() :

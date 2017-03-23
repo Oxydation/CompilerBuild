@@ -11,9 +11,9 @@ public interface MyABGrammarConstants {
   /** End of File. */
   int EOF = 0;
   /** RegularExpression Id. */
-  int A = 5;
+  int A = 7;
   /** RegularExpression Id. */
-  int B = 6;
+  int B = 8;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -25,6 +25,8 @@ public interface MyABGrammarConstants {
     "\"\\r\"",
     "\"\\t\"",
     "\"\\n\"",
+    "<token of kind 5>",
+    "<token of kind 6>",
     "\"*\"",
     "\"1\"",
   };
