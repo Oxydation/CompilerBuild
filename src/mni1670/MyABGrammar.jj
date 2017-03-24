@@ -18,15 +18,21 @@ public class MyABGrammar
   public static void main(String args []) throws ParseException
   {
     try
-    {      
+    {
       MyABGrammar parser = new MyABGrammar(new FileInputStream("text.txt"));
-
       while (true)
       {
         System.out.println("Reading ...");
         try
         {
-          parser.s();
+          switch(parser.read_one_line()) {
+				case 0:
+				break;
+				
+				case 1:
+				System.out.println("Finished");
+				break;
+          }
         }
         catch (Exception e)
         {
@@ -43,7 +49,7 @@ public class MyABGrammar
       }
     }
     catch (Exception ex)
-    {      
+    {
       System.out.println("Something went wrong: " + ex.getMessage());
     }	
   }
@@ -80,9 +86,23 @@ TOKEN : /* OPERATORS */
 // VN = { S,A, B }
 // S - > a | aB
 // B - > b | bB
+int read_one_line() :
+{}
+{ 
+ s() < EOF >
+  {
+    return 0;
+  }
+|   < EOF >
+  {
+    return 1;
+  }
+}
+
 void s() :
 {}
-{      < A >  [ b() ]  < EOF >
+{
+  < A > [ b() ]
 }
 
 void b() :
