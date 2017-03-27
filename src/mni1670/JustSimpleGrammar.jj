@@ -1,0 +1,261 @@
+/**
+ * JavaCC template file created by SF JavaCC plugin 1.5.28+ wizard for JavaCC 1.5.0+
+ */
+options
+{
+  LOOKAHEAD = 1;
+  static = false;
+}
+
+PARSER_BEGIN(JustSimpleGrammar)
+package mni1670;
+import java.io.FileInputStream;
+
+public class JustSimpleGrammar
+{
+  public static void main(String args []) throws ParseException
+  {
+    try
+    {
+      JustSimpleGrammar parser = new JustSimpleGrammar(new FileInputStream("code.txt"));
+      while (true)
+      {
+        System.out.println("Reading ...");
+        try
+        {
+          switch (parser.read_one_line())
+          {
+            case 0 : 
+            break;
+            case 1 : 
+            System.out.println("Finished");
+            break;
+          }
+        }
+        catch (Exception e)
+        {
+          System.out.println("Could not parse input.");
+          System.out.println(e.getMessage());
+          break;
+        }
+        catch (Error e)
+        {
+          System.out.println("Oops.");
+          System.out.println(e.getMessage());
+          break;
+        }
+      }
+    }
+    catch (Exception ex)
+    {
+      System.out.println("Something went wrong: " + ex.getMessage());
+    }	
+  }
+}
+
+PARSER_END(JustSimpleGrammar)
+
+SKIP :
+{
+  " "
+| "\r"
+| "\t"
+| "\n"
+| < "//" (~[ "\n", "\r" ])*
+    (
+      "\n"
+    | "\r"
+    | "\r\n"
+    ) >
+| < "/*" (~[ "*" ])* "*"
+    (
+      ~[ "/" ] (~[ "*" ])* "*"
+    )*
+    "/" >
+}
+
+//|  	< NUMBER : (< DIGIT >)+ >
+TOKEN : /* Letters and numbers */
+{
+ 	< #DIGIT : [ "0"-"9" ] >
+| < #COMMA : "." >
+| < NUMBER :
+    (< DIGIT >)+
+  |
+    (
+      (< DIGIT >)* < COMMA > (< DIGIT >)*
+    ) > 
+|   < #LETTER :["a"-"z", "A"-"Z"] >
+| < IDENTIFIER :
+    < LETTER >
+    (
+      < LETTER >
+    | < DIGIT >
+    )* >
+}
+
+TOKEN :
+{
+  < #NO_RETURN_TYPE : "void" >
+|  < #INT_TYPE :"int" >
+|  < #BOOLEAN_TYPE : "boolean" >  
+|  < OPEN : "{" >
+|  < CLOSE : "}" >
+|  < SEPERATOR: "," >
+|  < STATEMENT_CLOSE : ";" >
+|  < ASSIGNMENT : "=" >
+|  < BRACE_OPEN : "(" >
+|  < BRACE_CLOSE : ")" >
+}
+
+void compilationUnit():
+{}
+{
+	"program" <IDENTIFIER > <OPEN > definition() < CLOSE >
+}
+
+void definition() :
+{}
+{
+	(varDef() |funcDef() )*
+}
+
+void type():
+{}
+{
+	< NO_RETURN_TYPE > | < INT_TYPE > | < BOOLEAN_TYPE > 
+}
+
+void init() :
+{ }
+{
+	< ASSIGNMENT > < NUMBER >
+}
+void varDef() :
+{}
+{
+	type() < IDENTIFIER > [ init() ] <STATEMENT_CLOSE > 
+}
+
+void funcDef() : 
+{}
+{
+	funcHead() block() 
+}
+
+void funcHead() : 
+{}
+{
+	type() < IDENTIFIER > <BRACE_OPEN > [ formParList() ] <BRACE_CLOSE >
+}
+
+void formParList() :
+{
+}
+{
+	["byref"] type() < IDENTIFIER > ( < SEPERATOR > ["byref"] type() < IDENTIFIER >)*
+	
+}
+
+void block() :
+{
+}
+{
+	< OPEN >  (varDef()|stat())* <CLOSE >	
+}
+
+void stat() : { }
+{
+ 	 assignStat() | callStat() | ifStat() | whileStat() | returnStat() | block() | < STATEMENT_CLOSE >
+}
+
+void assignStat() :
+{}
+{
+	< IDENTIFIER > <ASSIGNMENT > expr() < STATEMENT_CLOSE >
+}
+
+void callStat() :
+{}
+{
+	call() < STATEMENT_CLOSE >
+}
+
+void call() :
+{}
+{
+	< IDENTIFIER > <BRACE_OPEN > [  actParList() ] <BRACE_CLOSE >
+}
+
+void actParList() :
+{}
+{
+	expr() (< SEPERATOR > expr())*
+}
+
+void ifStat():
+{}
+{
+	"if" < BRACE_OPEN > expr() < BRACE_CLOSE > stat() [ "else" stat() ]
+}
+
+void whileStat() :
+{}
+{
+	"while" < BRACE_OPEN > expr() < BRACE_CLOSE > stat()
+}
+
+void returnStat():
+{}
+{
+  "return" [expr() ] <STATEMENT_CLOSE >	
+}
+
+void expr() :
+{}
+{
+	orExpr()
+}
+
+void orExpr():
+{}
+{
+	andExpr() ( "||" andExpr())*
+}
+
+void andExpr():
+{}
+{
+	relExpr() ("&&" relExpr())*
+}
+
+void relExpr():
+{
+}
+{
+	simpleExpr() [("==" | "!=" | "<" | "<=" | ">" | ">=" ) simpleExpr()]
+}
+
+void simpleExpr():
+{ }
+{
+	["+" | "-"] term() (("+" | "-") term())*
+}
+
+void term():
+{}
+{
+	notFact() (("*" | "/") notFact())*
+}
+
+void notFact() :
+{}
+{
+	["!"] fact()
+}
+
+void fact():
+{}
+{
+	< NUMBER > | < IDENTIFIER > [<BRACE_OPEN > [actParList() ] <BRACE_CLOSE > ] | < BRACE_OPEN > expr() < BRACE_CLOSE >
+}
