@@ -11,35 +11,83 @@ public interface JustSimpleGrammarConstants {
   /** End of File. */
   int EOF = 0;
   /** RegularExpression Id. */
-  int DIGIT = 7;
+  int NO_RETURN_TYPE = 7;
   /** RegularExpression Id. */
-  int COMMA = 8;
+  int INT_TYPE = 8;
   /** RegularExpression Id. */
-  int NUMBER = 9;
+  int BOOLEAN_TYPE = 9;
   /** RegularExpression Id. */
-  int LETTER = 10;
+  int WHILE = 10;
   /** RegularExpression Id. */
-  int IDENTIFIER = 11;
+  int IF = 11;
   /** RegularExpression Id. */
-  int NO_RETURN_TYPE = 12;
+  int ELSE = 12;
   /** RegularExpression Id. */
-  int INT_TYPE = 13;
+  int RETURN = 13;
   /** RegularExpression Id. */
-  int BOOLEAN_TYPE = 14;
+  int PROGRAM = 14;
   /** RegularExpression Id. */
-  int OPEN = 15;
+  int BY_REF = 15;
   /** RegularExpression Id. */
-  int CLOSE = 16;
+  int TRUE = 16;
   /** RegularExpression Id. */
-  int SEPERATOR = 17;
+  int FALSE = 17;
   /** RegularExpression Id. */
-  int STATEMENT_CLOSE = 18;
+  int NEW = 18;
   /** RegularExpression Id. */
-  int ASSIGNMENT = 19;
+  int OPEN = 19;
   /** RegularExpression Id. */
-  int BRACE_OPEN = 20;
+  int CLOSE = 20;
   /** RegularExpression Id. */
-  int BRACE_CLOSE = 21;
+  int SEPERATOR = 21;
+  /** RegularExpression Id. */
+  int STATEMENT_CLOSE = 22;
+  /** RegularExpression Id. */
+  int ASSIGNMENT = 23;
+  /** RegularExpression Id. */
+  int BRACE_OPEN = 24;
+  /** RegularExpression Id. */
+  int BRACE_CLOSE = 25;
+  /** RegularExpression Id. */
+  int BRACETS_OPEN = 26;
+  /** RegularExpression Id. */
+  int BRACETS_CLOSE = 27;
+  /** RegularExpression Id. */
+  int ACCESS = 28;
+  /** RegularExpression Id. */
+  int OR = 29;
+  /** RegularExpression Id. */
+  int AND = 30;
+  /** RegularExpression Id. */
+  int NOT = 31;
+  /** RegularExpression Id. */
+  int NOT_EQUAL = 32;
+  /** RegularExpression Id. */
+  int EQUAL = 33;
+  /** RegularExpression Id. */
+  int LESS = 34;
+  /** RegularExpression Id. */
+  int GREATER = 35;
+  /** RegularExpression Id. */
+  int LESS_OR_EQUAL = 36;
+  /** RegularExpression Id. */
+  int GREATER_OR_EQUAL = 37;
+  /** RegularExpression Id. */
+  int PLUS = 38;
+  /** RegularExpression Id. */
+  int MINUS = 39;
+  /** RegularExpression Id. */
+  int MUL = 40;
+  /** RegularExpression Id. */
+  int DIV = 41;
+  /** RegularExpression Id. */
+  int NUMBER = 42;
+  /** RegularExpression Id. */
+  int DIGIT = 43;
+  /** RegularExpression Id. */
+  int IDENTIFIER = 44;
+  /** RegularExpression Id. */
+  int LETTER = 45;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -53,14 +101,18 @@ public interface JustSimpleGrammarConstants {
     "\"\\n\"",
     "<token of kind 5>",
     "<token of kind 6>",
-    "<DIGIT>",
-    "\".\"",
-    "<NUMBER>",
-    "<LETTER>",
-    "<IDENTIFIER>",
     "\"void\"",
     "\"int\"",
     "\"boolean\"",
+    "\"while\"",
+    "\"if\"",
+    "\"else\"",
+    "\"return\"",
+    "\"program\"",
+    "\"byref\"",
+    "\"true\"",
+    "\"false\"",
+    "\"new\"",
     "\"{\"",
     "\"}\"",
     "\",\"",
@@ -68,25 +120,26 @@ public interface JustSimpleGrammarConstants {
     "\"=\"",
     "\"(\"",
     "\")\"",
-    "\"program\"",
-    "\"byref\"",
-    "\"if\"",
-    "\"else\"",
-    "\"while\"",
-    "\"return\"",
+    "\"[\"",
+    "\"]\"",
+    "\".\"",
     "\"||\"",
     "\"&&\"",
-    "\"==\"",
+    "\"!\"",
     "\"!=\"",
+    "\"==\"",
     "\"<\"",
-    "\"<=\"",
     "\">\"",
+    "\"<=\"",
     "\">=\"",
     "\"+\"",
     "\"-\"",
     "\"*\"",
     "\"/\"",
-    "\"!\"",
+    "<NUMBER>",
+    "<DIGIT>",
+    "<IDENTIFIER>",
+    "<LETTER>",
   };
 
 }

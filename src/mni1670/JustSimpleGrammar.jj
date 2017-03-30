@@ -3,7 +3,9 @@
  */
 options
 {
-  LOOKAHEAD = 1;
+  LOOKAHEAD= 2;
+
+
   static = false;
 }
 
@@ -23,7 +25,7 @@ public class JustSimpleGrammar
         System.out.println("Reading ...");
         try
         {
-          switch (parser.read_one_line())
+          switch (parser.start())
           {
             case 0 : 
             break;
@@ -74,188 +76,322 @@ SKIP :
     "/" >
 }
 
-//|  	< NUMBER : (< DIGIT >)+ >
+/* Keywords */
+TOKEN :
+{
+  < NO_RETURN_TYPE : "void" >
+| < INT_TYPE : "int" >
+| < BOOLEAN_TYPE : "boolean" >
+| < WHILE : "while" >
+| < IF : "if" >
+| < ELSE : "else" >
+| < RETURN : "return" >
+| < PROGRAM : "program" >
+| < BY_REF : "byref" >
+| < TRUE : "true" >
+| < FALSE : "false" >
+| < NEW : "new" >
+}
+
+/* OPERATORS*/
+TOKEN :
+{
+  < OPEN : "{" >
+| < CLOSE : "}" >
+| < SEPERATOR : "," >
+| < STATEMENT_CLOSE : ";" >
+| < ASSIGNMENT : "=" >
+| < BRACE_OPEN : "(" >
+| < BRACE_CLOSE : ")" >
+| < BRACETS_OPEN : "[" >
+| < BRACETS_CLOSE : "]" >
+| < ACCESS : "." >
+| < OR : "||" >
+| < AND : "&&" >
+| < NOT : "!" >
+| < NOT_EQUAL : "!=" >
+| < EQUAL : "==" >
+| < LESS : "<" >
+| < GREATER : ">" >
+| < LESS_OR_EQUAL : "<=" >
+| < GREATER_OR_EQUAL : ">=" >
+| < PLUS : "+" >
+| < MINUS : "-" >
+| < MUL : "*" >
+| < DIV : "/" >
+}
+
 TOKEN : /* Letters and numbers */
 {
- 	< #DIGIT : [ "0"-"9" ] >
-| < #COMMA : "." >
-| < NUMBER :
+  < NUMBER :
     (< DIGIT >)+
   |
     (
-      (< DIGIT >)* < COMMA > (< DIGIT >)*
-    ) > 
-|   < #LETTER :["a"-"z", "A"-"Z"] >
+      (< DIGIT >)* < ACCESS > (< DIGIT >)*
+    ) >
+| < #DIGIT : [ "0"-"9" ] >
 | < IDENTIFIER :
     < LETTER >
     (
       < LETTER >
     | < DIGIT >
     )* >
+| < #LETTER : [ "a"-"z", "A"-"Z" ] >
 }
 
-TOKEN :
-{
-  < #NO_RETURN_TYPE : "void" >
-|  < #INT_TYPE :"int" >
-|  < #BOOLEAN_TYPE : "boolean" >  
-|  < OPEN : "{" >
-|  < CLOSE : "}" >
-|  < SEPERATOR: "," >
-|  < STATEMENT_CLOSE : ";" >
-|  < ASSIGNMENT : "=" >
-|  < BRACE_OPEN : "(" >
-|  < BRACE_CLOSE : ")" >
-}
-
-void compilationUnit():
+int start() :
 {}
 {
-	"program" <IDENTIFIER > <OPEN > definition() < CLOSE >
+  compilationUnit() < EOF >
+  {
+    return 0;
+  }
+| < EOF >
+  {
+    return 1;
+  }
+}
+
+void compilationUnit() :
+{}
+{
+  < PROGRAM > < IDENTIFIER > < OPEN > definition() < CLOSE >
 }
 
 void definition() :
 {}
 {
-	(varDef() |funcDef() )*
+  (
+    LOOKAHEAD(3)
+    varDef()
+  | funcDef()
+  )*
 }
 
-void type():
+void type() :
 {}
 {
-	< NO_RETURN_TYPE > | < INT_TYPE > | < BOOLEAN_TYPE > 
+  < NO_RETURN_TYPE >
+| < INT_TYPE >
+  [
+    < BRACETS_OPEN > [ < NUMBER > ] < BRACETS_CLOSE >
+  ]
+| < BOOLEAN_TYPE >
 }
 
 void init() :
-{ }
+{}
 {
-	< ASSIGNMENT > < NUMBER >
+  < ASSIGNMENT >
+  (
+    < NUMBER >
+  | < TRUE >
+  | < FALSE >
+  | arrayInit()
+  )
 }
+
+void arrayInit() :
+{}
+{
+  < NEW > type()
+}
+
 void varDef() :
 {}
 {
-	type() < IDENTIFIER > [ init() ] <STATEMENT_CLOSE > 
+  type() < IDENTIFIER > [ init() ] < STATEMENT_CLOSE >
 }
 
-void funcDef() : 
+void funcDef() :
 {}
 {
-	funcHead() block() 
+  funcHead() block()
 }
 
-void funcHead() : 
+void funcHead() :
 {}
 {
-	type() < IDENTIFIER > <BRACE_OPEN > [ formParList() ] <BRACE_CLOSE >
+  type() < IDENTIFIER > < BRACE_OPEN > [ formParList() ] < BRACE_CLOSE >
 }
 
 void formParList() :
 {
 }
 {
-	["byref"] type() < IDENTIFIER > ( < SEPERATOR > ["byref"] type() < IDENTIFIER >)*
-	
+  [ < BY_REF > ] type() < IDENTIFIER >
+  (
+    < SEPERATOR > [ < BY_REF > ] type() < IDENTIFIER >
+  )*
 }
 
 void block() :
 {
 }
 {
-	< OPEN >  (varDef()|stat())* <CLOSE >	
+  < OPEN >
+  (
+    varDef()
+  | stat()
+  )*
+  < CLOSE >	
 }
 
-void stat() : { }
+void stat() :
+{}
 {
- 	 assignStat() | callStat() | ifStat() | whileStat() | returnStat() | block() | < STATEMENT_CLOSE >
+  assignStat()
+| callStat()
+| ifStat()
+| whileStat()
+| returnStat()
+| block()
+| < STATEMENT_CLOSE >
 }
 
 void assignStat() :
 {}
 {
-	< IDENTIFIER > <ASSIGNMENT > expr() < STATEMENT_CLOSE >
+  < IDENTIFIER > < ASSIGNMENT > expr() < STATEMENT_CLOSE >
 }
 
 void callStat() :
 {}
 {
-	call() < STATEMENT_CLOSE >
+  (
+    call() < STATEMENT_CLOSE >
+  )
 }
 
 void call() :
 {}
 {
-	< IDENTIFIER > <BRACE_OPEN > [  actParList() ] <BRACE_CLOSE >
+  < IDENTIFIER > < BRACE_OPEN > [ actParList() ] < BRACE_CLOSE >
 }
 
 void actParList() :
 {}
 {
-	expr() (< SEPERATOR > expr())*
+  expr()
+  (
+    < SEPERATOR > expr()
+  )*
 }
 
-void ifStat():
-{}
+void ifStat() :
 {
-	"if" < BRACE_OPEN > expr() < BRACE_CLOSE > stat() [ "else" stat() ]
+}
+{
+  < IF > < BRACE_OPEN > expr() < BRACE_CLOSE > stat() [ < ELSE > stat() ]
 }
 
 void whileStat() :
 {}
 {
-	"while" < BRACE_OPEN > expr() < BRACE_CLOSE > stat()
+  < WHILE > < BRACE_OPEN > expr() < BRACE_CLOSE > stat()
 }
 
-void returnStat():
+void returnStat() :
 {}
 {
-  "return" [expr() ] <STATEMENT_CLOSE >	
+  < RETURN > [ expr() ] < STATEMENT_CLOSE >	
 }
 
 void expr() :
 {}
 {
-	orExpr()
+  orExpr()
 }
 
-void orExpr():
+void orExpr() :
 {}
 {
-	andExpr() ( "||" andExpr())*
+  andExpr()
+  (
+    < OR > andExpr()
+  )*
 }
 
-void andExpr():
+void andExpr() :
 {}
 {
-	relExpr() ("&&" relExpr())*
+  relExpr()
+  (
+    < AND > relExpr()
+  )*
 }
 
-void relExpr():
+void relExpr() :
 {
 }
 {
-	simpleExpr() [("==" | "!=" | "<" | "<=" | ">" | ">=" ) simpleExpr()]
+  simpleExpr()
+  [
+    (
+      < EQUAL >
+    | < NOT_EQUAL >
+    | < LESS >
+    | < LESS_OR_EQUAL >
+    | < GREATER >
+    | < GREATER_OR_EQUAL >
+    )
+    simpleExpr()
+  ]
 }
 
-void simpleExpr():
-{ }
-{
-	["+" | "-"] term() (("+" | "-") term())*
-}
-
-void term():
+void simpleExpr() :
 {}
 {
-	notFact() (("*" | "/") notFact())*
+  [
+    < PLUS >
+  | < MINUS >
+  ]
+  term()
+  (
+    (
+      < PLUS >
+    | < MINUS >
+    )
+    term()
+  )*
+}
+
+void term() :
+{}
+{
+  notFact()
+  (
+    (
+      < MUL >
+    | < DIV >
+    )
+    notFact()
+  )*
 }
 
 void notFact() :
 {}
 {
-	["!"] fact()
+  [ < NOT > ] fact()
 }
 
-void fact():
+void fact() :
 {}
 {
-	< NUMBER > | < IDENTIFIER > [<BRACE_OPEN > [actParList() ] <BRACE_CLOSE > ] | < BRACE_OPEN > expr() < BRACE_CLOSE >
+  < NUMBER >
+| < IDENTIFIER >
+  [
+    < BRACE_OPEN > [ actParList() ] < BRACE_CLOSE >
+  ]
+  [
+    < BRACETS_OPEN >
+    (
+      < IDENTIFIER >
+    | < NUMBER >
+    )
+    < BRACETS_CLOSE >
+  ]
+  (
+  < ACCESS > < IDENTIFIER >)*
+| < BRACE_OPEN > expr() < BRACE_CLOSE >
 }
