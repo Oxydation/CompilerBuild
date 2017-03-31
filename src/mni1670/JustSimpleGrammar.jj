@@ -12,46 +12,52 @@ options
 PARSER_BEGIN(JustSimpleGrammar)
 package mni1670;
 import java.io.FileInputStream;
+import utils.*;
+import utils.Symbol.*;
 
 public class JustSimpleGrammar
 {
+  public static SymbolTable symbolTable;
   public static void main(String args []) throws ParseException
   {
     try
     {
+      symbolTable = new SymbolTable();
+      
       JustSimpleGrammar parser = new JustSimpleGrammar(new FileInputStream("code.txt"));
-      while (true)
-      {
+   
         System.out.println("Reading ...");
         try
         {
           switch (parser.start())
           {
-            case 0 : 
-            break;
-            case 1 : 
+            case 0:
             System.out.println("Finished");
+            symbolTable.printSymbols();
+            break;
+            case 1:            
+            System.out.println("Finished");
+            symbolTable.printSymbols();
             break;
           }
         }
         catch (Exception e)
         {
+          e.printStackTrace();
           System.out.println("Could not parse input.");
           System.out.println(e.getMessage());
-          break;
         }
         catch (Error e)
         {
+            e.printStackTrace();
           System.out.println("Oops.");
           System.out.println(e.getMessage());
-          break;
-        }
-      }
+        }      
     }
     catch (Exception ex)
     {
       System.out.println("Something went wrong: " + ex.getMessage());
-    }	
+    }
   }
 }
 
@@ -88,9 +94,14 @@ TOKEN :
 | < RETURN : "return" >
 | < PROGRAM : "program" >
 | < BY_REF : "byref" >
-| < TRUE : "true" >
-| < FALSE : "false" >
 | < NEW : "new" >
+}
+
+/* Values */
+TOKEN:
+{
+ < TRUE : "true" >
+| < FALSE : "false" >
 }
 
 /* OPERATORS*/
@@ -153,15 +164,29 @@ int start() :
 }
 
 void compilationUnit() :
-{}
 {
-  < PROGRAM > < IDENTIFIER > < OPEN > definition() < CLOSE >
+	Symbol symbol;
+	Token token;
+}
+{
+   < PROGRAM >
+  token =  < IDENTIFIER >
+ {
+	 symbol = symbolTable.lookup(token.image);
+	 if(symbol == null) {
+	   	symbol = new Symbol();
+	   	symbol.name = token.image;
+	   	symbol.kind = Kind.Undefined;
+		symbolTable.insert(symbol);
+	 }
+  }
+  < OPEN > definition() < CLOSE >
 }
 
 void definition() :
 {}
 {
-  (
+  (    
     LOOKAHEAD(3)
     varDef()
   | funcDef()
@@ -198,9 +223,23 @@ void arrayInit() :
 }
 
 void varDef() :
-{}
 {
-  type() < IDENTIFIER > [ init() ] < STATEMENT_CLOSE >
+	Symbol symbol;
+	Token token;
+}
+{
+  type()
+  token =  < IDENTIFIER >
+ {
+	 symbol = symbolTable.lookup(token.image);
+	 if(symbol == null) {
+	   	symbol = new Symbol();
+	   	symbol.name = token.image;
+	   	symbol.kind = Kind.Variable;
+		symbolTable.insert(symbol);
+	 }
+  }
+   [ init() ] < STATEMENT_CLOSE >
 }
 
 void funcDef() :
@@ -210,18 +249,53 @@ void funcDef() :
 }
 
 void funcHead() :
-{}
 {
-  type() < IDENTIFIER > < BRACE_OPEN > [ formParList() ] < BRACE_CLOSE >
+	Symbol symbol;
+	Token token;
+}
+{
+  type()
+  token =  < IDENTIFIER >
+ {
+	 symbol = symbolTable.lookup(token.image);
+	 if(symbol == null) {
+	   	symbol = new Symbol();
+	   	symbol.name = token.image;
+	   	symbol.kind = Kind.Function;
+		symbolTable.insert(symbol);
+	 }
+  } < BRACE_OPEN > [ formParList() ] < BRACE_CLOSE >
 }
 
 void formParList() :
 {
+	Symbol symbol;
+	Token token;
 }
 {
-  [ < BY_REF > ] type() < IDENTIFIER >
+  [ < BY_REF > ] type()
+  token =  < IDENTIFIER >
+ {
+	 symbol = symbolTable.lookup(token.image);
+	 if(symbol == null) {
+	   	symbol = new Symbol();
+	   	symbol.name = token.image;
+	   	symbol.kind = Kind.Parameter;
+		symbolTable.insert(symbol);
+	 }
+  }
   (
-    < SEPERATOR > [ < BY_REF > ] type() < IDENTIFIER >
+    < SEPERATOR > [ < BY_REF > ] type()
+     token =  < IDENTIFIER >
+ {
+	 symbol = symbolTable.lookup(token.image);
+	 if(symbol == null) {
+	   	symbol = new Symbol();
+	   	symbol.name = token.image;
+	   	symbol.kind = Kind.Parameter;
+		symbolTable.insert(symbol);
+	 }
+  }
   )*
 }
 
@@ -250,9 +324,26 @@ void stat() :
 }
 
 void assignStat() :
-{}
 {
-  < IDENTIFIER > < ASSIGNMENT > expr() < STATEMENT_CLOSE >
+  	Token token;
+	Symbol symbol;
+}
+{
+  token = < IDENTIFIER >
+  {
+	 symbol = symbolTable.lookup(token.image);
+	 if(symbol == null) {
+	   	symbol = new Symbol();
+	   	symbol.name = token.image;
+	   	symbol.kind = Kind.Variable;
+		symbolTable.insert(symbol);
+	 }
+  }
+  
+   < ASSIGNMENT > expr() < STATEMENT_CLOSE >
+   {
+		//codeGenerator.emit2(Opcode.ISTORE, symbol.address);
+   }
 }
 
 void callStat() :
@@ -264,9 +355,22 @@ void callStat() :
 }
 
 void call() :
-{}
 {
-  < IDENTIFIER > < BRACE_OPEN > [ actParList() ] < BRACE_CLOSE >
+	Symbol symbol;
+	Token token;
+}
+{
+   token =  < IDENTIFIER >
+ {
+	 symbol = symbolTable.lookup(token.image);
+	 if(symbol == null) {
+	   	symbol = new Symbol();
+	   	symbol.name = token.image;
+	   	symbol.kind = Kind.Function;
+		symbolTable.insert(symbol);
+	 }
+  }
+   < BRACE_OPEN > [ actParList() ] < BRACE_CLOSE >
 }
 
 void actParList() :
@@ -376,7 +480,10 @@ void notFact() :
 }
 
 void fact() :
-{}
+{
+	Symbol symbol;
+	Token token;
+}
 {
   < NUMBER >
 | < IDENTIFIER >

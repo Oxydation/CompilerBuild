@@ -29,11 +29,11 @@ public interface JustSimpleGrammarConstants {
   /** RegularExpression Id. */
   int BY_REF = 15;
   /** RegularExpression Id. */
-  int TRUE = 16;
+  int NEW = 16;
   /** RegularExpression Id. */
-  int FALSE = 17;
+  int TRUE = 17;
   /** RegularExpression Id. */
-  int NEW = 18;
+  int FALSE = 18;
   /** RegularExpression Id. */
   int OPEN = 19;
   /** RegularExpression Id. */
@@ -110,9 +110,9 @@ public interface JustSimpleGrammarConstants {
     "\"return\"",
     "\"program\"",
     "\"byref\"",
+    "\"new\"",
     "\"true\"",
     "\"false\"",
-    "\"new\"",
     "\"{\"",
     "\"}\"",
     "\",\"",
