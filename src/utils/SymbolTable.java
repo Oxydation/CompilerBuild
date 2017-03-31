@@ -14,7 +14,6 @@ public class SymbolTable {
 	public Scope currentScope;
 
 	public SymbolTable() {
-		start = new Symbol(); // should be program symbol
 	}
 
 	public void enterScope(Scope scope) {
@@ -26,33 +25,40 @@ public class SymbolTable {
 	}
 
 	public void insert(Symbol symbol) {
-		Symbol currentSymbol = start;
-		while (currentSymbol.next != null) {
-			currentSymbol = currentSymbol.next;
+		if (start == null) {
+			start = symbol;
+		} else {
+			Symbol currentSymbol = start;
+			while (currentSymbol.next != null) {
+				currentSymbol = currentSymbol.next;
+			}
+			currentSymbol.next = symbol;
 		}
-		currentSymbol.next = symbol;
 	}
 
 	public Symbol lookup(String name) {
-		Symbol currentSymbol = start;
+		if (start != null) {
+			Symbol currentSymbol = start;
 
-		while (currentSymbol.name != null && !currentSymbol.name.equals(name) && currentSymbol.next != null) {
-			currentSymbol = currentSymbol.next;
+			while (currentSymbol.name != null && !currentSymbol.name.equals(name) && currentSymbol.next != null) {
+				currentSymbol = currentSymbol.next;
+			}
+
+			if (currentSymbol.name != null && currentSymbol.name.equals(name)) {
+				return currentSymbol;
+			}
 		}
 
-		if (currentSymbol.name != null && currentSymbol.name.equals(name)) {
-			return currentSymbol;
-		} else {
-			return null;
-		}
+		return null;
 	}
 
 	public void printSymbols() {
 		Symbol currentSymbol = start;
-
+		
 		while (currentSymbol.next != null) {
-			System.out.println(currentSymbol.name);
+			System.out.println(currentSymbol.name + " - " + currentSymbol.kind);
 			currentSymbol = currentSymbol.next;
-		}
+		}		
+		System.out.println(currentSymbol.name + " - " + currentSymbol.kind);
 	}
 }

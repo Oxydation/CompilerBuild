@@ -6,41 +6,40 @@ import utils.Symbol.*;
 
 public class JustSimpleGrammar implements JustSimpleGrammarConstants {
   public static SymbolTable symbolTable;
+
   public static void main(String args []) throws ParseException
   {
     try
     {
       symbolTable = new SymbolTable();
-
       JustSimpleGrammar parser = new JustSimpleGrammar(new FileInputStream("code.txt"));
-
-        System.out.println("Reading ...");
-        try
+      System.out.println("Reading ...");
+      try
+      {
+        switch (parser.start())
         {
-          switch (parser.start())
-          {
-            case 0:
-            System.out.println("Finished");
-            symbolTable.printSymbols();
-            break;
-            case 1:
-            System.out.println("Finished");
-            symbolTable.printSymbols();
-            break;
-          }
+          case 0 :
+          System.out.println("Finished");
+          symbolTable.printSymbols();
+          break;
+          case 1 :
+          System.out.println("Finished");
+          symbolTable.printSymbols();
+          break;
         }
-        catch (Exception e)
-        {
-          e.printStackTrace();
-          System.out.println("Could not parse input.");
-          System.out.println(e.getMessage());
-        }
-        catch (Error e)
-        {
-            e.printStackTrace();
-          System.out.println("Oops.");
-          System.out.println(e.getMessage());
-        }
+      }
+      catch (Exception e)
+      {
+        e.printStackTrace();
+        System.out.println("Could not parse input.");
+        System.out.println(e.getMessage());
+      }
+      catch (Error e)
+      {
+        e.printStackTrace();
+        System.out.println("Oops.");
+        System.out.println(e.getMessage());
+      }
     }
     catch (Exception ex)
     {
@@ -64,17 +63,18 @@ public class JustSimpleGrammar implements JustSimpleGrammarConstants {
   }
 
   final public void compilationUnit() throws ParseException {
-        Symbol symbol;
-        Token token;
+  Symbol symbol;
+  Token token;
     jj_consume_token(PROGRAM);
     token = jj_consume_token(IDENTIFIER);
-         symbol = symbolTable.lookup(token.image);
-         if(symbol == null) {
-                symbol = new Symbol();
-                symbol.name = token.image;
-                symbol.kind = Kind.Undefined;
-                symbolTable.insert(symbol);
-         }
+    symbol = symbolTable.lookup(token.image);
+    if (symbol == null)
+    {
+      symbol = new Symbol();
+      symbol.name = token.image;
+      symbol.kind = Kind.Undefined;
+      symbolTable.insert(symbol);
+    }
     jj_consume_token(OPEN);
     definition();
     jj_consume_token(CLOSE);
@@ -145,17 +145,18 @@ public class JustSimpleGrammar implements JustSimpleGrammarConstants {
   }
 
   final public void varDef() throws ParseException {
-        Symbol symbol;
-        Token token;
+  Symbol symbol;
+  Token token;
     type();
     token = jj_consume_token(IDENTIFIER);
-         symbol = symbolTable.lookup(token.image);
-         if(symbol == null) {
-                symbol = new Symbol();
-                symbol.name = token.image;
-                symbol.kind = Kind.Variable;
-                symbolTable.insert(symbol);
-         }
+    symbol = symbolTable.lookup(token.image);
+    if (symbol == null)
+    {
+      symbol = new Symbol();
+      symbol.name = token.image;
+      symbol.kind = Kind.Variable;
+      symbolTable.insert(symbol);
+    }
     if (jj_2_15(2)) {
       init();
     } else {
@@ -170,17 +171,18 @@ public class JustSimpleGrammar implements JustSimpleGrammarConstants {
   }
 
   final public void funcHead() throws ParseException {
-        Symbol symbol;
-        Token token;
+  Symbol symbol;
+  Token token;
     type();
     token = jj_consume_token(IDENTIFIER);
-         symbol = symbolTable.lookup(token.image);
-         if(symbol == null) {
-                symbol = new Symbol();
-                symbol.name = token.image;
-                symbol.kind = Kind.Function;
-                symbolTable.insert(symbol);
-         }
+    symbol = symbolTable.lookup(token.image);
+    if (symbol == null)
+    {
+      symbol = new Symbol();
+      symbol.name = token.image;
+      symbol.kind = Kind.Function;
+      symbolTable.insert(symbol);
+    }
     jj_consume_token(BRACE_OPEN);
     if (jj_2_16(2)) {
       formParList();
@@ -191,8 +193,8 @@ public class JustSimpleGrammar implements JustSimpleGrammarConstants {
   }
 
   final public void formParList() throws ParseException {
-        Symbol symbol;
-        Token token;
+  Symbol symbol;
+  Token token;
     if (jj_2_17(2)) {
       jj_consume_token(BY_REF);
     } else {
@@ -200,13 +202,14 @@ public class JustSimpleGrammar implements JustSimpleGrammarConstants {
     }
     type();
     token = jj_consume_token(IDENTIFIER);
-         symbol = symbolTable.lookup(token.image);
-         if(symbol == null) {
-                symbol = new Symbol();
-                symbol.name = token.image;
-                symbol.kind = Kind.Parameter;
-                symbolTable.insert(symbol);
-         }
+    symbol = symbolTable.lookup(token.image);
+    if (symbol == null)
+    {
+      symbol = new Symbol();
+      symbol.name = token.image;
+      symbol.kind = Kind.Parameter;
+      symbolTable.insert(symbol);
+    }
     label_2:
     while (true) {
       if (jj_2_18(2)) {
@@ -222,13 +225,14 @@ public class JustSimpleGrammar implements JustSimpleGrammarConstants {
       }
       type();
       token = jj_consume_token(IDENTIFIER);
-         symbol = symbolTable.lookup(token.image);
-         if(symbol == null) {
-                symbol = new Symbol();
-                symbol.name = token.image;
-                symbol.kind = Kind.Parameter;
-                symbolTable.insert(symbol);
-         }
+      symbol = symbolTable.lookup(token.image);
+      if (symbol == null)
+      {
+        symbol = new Symbol();
+        symbol.name = token.image;
+        symbol.kind = Kind.Parameter;
+        symbolTable.insert(symbol);
+      }
     }
   }
 
@@ -275,16 +279,17 @@ public class JustSimpleGrammar implements JustSimpleGrammarConstants {
   }
 
   final public void assignStat() throws ParseException {
-        Token token;
-        Symbol symbol;
+  Token token;
+  Symbol symbol;
     token = jj_consume_token(IDENTIFIER);
-         symbol = symbolTable.lookup(token.image);
-         if(symbol == null) {
-                symbol = new Symbol();
-                symbol.name = token.image;
-                symbol.kind = Kind.Variable;
-                symbolTable.insert(symbol);
-         }
+    symbol = symbolTable.lookup(token.image);
+    if (symbol == null)
+    {
+      symbol = new Symbol();
+      symbol.name = token.image;
+      symbol.kind = Kind.Variable;
+      symbolTable.insert(symbol);
+    }
     jj_consume_token(ASSIGNMENT);
     expr();
     jj_consume_token(STATEMENT_CLOSE);
@@ -297,16 +302,17 @@ public class JustSimpleGrammar implements JustSimpleGrammarConstants {
   }
 
   final public void call() throws ParseException {
-        Symbol symbol;
-        Token token;
+  Symbol symbol;
+  Token token;
     token = jj_consume_token(IDENTIFIER);
-         symbol = symbolTable.lookup(token.image);
-         if(symbol == null) {
-                symbol = new Symbol();
-                symbol.name = token.image;
-                symbol.kind = Kind.Function;
-                symbolTable.insert(symbol);
-         }
+    symbol = symbolTable.lookup(token.image);
+    if (symbol == null)
+    {
+      symbol = new Symbol();
+      symbol.name = token.image;
+      symbol.kind = Kind.Function;
+      symbolTable.insert(symbol);
+    }
     jj_consume_token(BRACE_OPEN);
     if (jj_2_30(2)) {
       actParList();
@@ -483,12 +489,28 @@ public class JustSimpleGrammar implements JustSimpleGrammarConstants {
   }
 
   final public void fact() throws ParseException {
-        Symbol symbol;
-        Token token;
+  Symbol symbol;
+  Token token;
     if (jj_2_59(2)) {
-      jj_consume_token(NUMBER);
+      token = jj_consume_token(NUMBER);
+    symbol = symbolTable.lookup(token.image);
+    if (symbol == null)
+    {
+      symbol = new Symbol();
+      symbol.name = token.image;
+      symbol.kind = Kind.Constant;
+      symbolTable.insert(symbol);
+    }
     } else if (jj_2_60(2)) {
-      jj_consume_token(IDENTIFIER);
+      token = jj_consume_token(IDENTIFIER);
+    symbol = symbolTable.lookup(token.image);
+    if (symbol == null)
+    {
+      symbol = new Symbol();
+      symbol.name = token.image;
+      symbol.kind = Kind.Variable;
+      symbolTable.insert(symbol);
+    }
       if (jj_2_54(2)) {
         jj_consume_token(BRACE_OPEN);
         if (jj_2_53(2)) {
@@ -503,9 +525,25 @@ public class JustSimpleGrammar implements JustSimpleGrammarConstants {
       if (jj_2_57(2)) {
         jj_consume_token(BRACETS_OPEN);
         if (jj_2_55(2)) {
-          jj_consume_token(IDENTIFIER);
+          token = jj_consume_token(IDENTIFIER);
+        symbol = symbolTable.lookup(token.image);
+        if (symbol == null)
+        {
+          symbol = new Symbol();
+          symbol.name = token.image;
+          symbol.kind = Kind.Variable;
+          symbolTable.insert(symbol);
+        }
         } else if (jj_2_56(2)) {
-          jj_consume_token(NUMBER);
+          token = jj_consume_token(NUMBER);
+        symbol = symbolTable.lookup(token.image);
+        if (symbol == null)
+        {
+          symbol = new Symbol();
+          symbol.name = token.image;
+          symbol.kind = Kind.Constant;
+          symbolTable.insert(symbol);
+        }
         } else {
           jj_consume_token(-1);
           throw new ParseException();
@@ -522,7 +560,15 @@ public class JustSimpleGrammar implements JustSimpleGrammarConstants {
           break label_9;
         }
         jj_consume_token(ACCESS);
-        jj_consume_token(IDENTIFIER);
+        token = jj_consume_token(IDENTIFIER);
+      symbol = symbolTable.lookup(token.image);
+      if (symbol == null)
+      {
+        symbol = new Symbol();
+        symbol.name = token.image;
+        symbol.kind = Kind.Variable;
+        symbolTable.insert(symbol);
+      }
       }
     } else if (jj_2_61(2)) {
       jj_consume_token(BRACE_OPEN);
@@ -961,6 +1007,12 @@ public class JustSimpleGrammar implements JustSimpleGrammarConstants {
     finally { jj_save(60, xla); }
   }
 
+  private boolean jj_3_61() {
+    if (jj_scan_token(BRACE_OPEN)) return true;
+    if (jj_3R_25()) return true;
+    return false;
+  }
+
   private boolean jj_3R_32() {
     if (jj_scan_token(IDENTIFIER)) return true;
     if (jj_scan_token(BRACE_OPEN)) return true;
@@ -969,6 +1021,12 @@ public class JustSimpleGrammar implements JustSimpleGrammarConstants {
 
   private boolean jj_3R_10() {
     if (jj_scan_token(PROGRAM)) return true;
+    if (jj_scan_token(IDENTIFIER)) return true;
+    return false;
+  }
+
+  private boolean jj_3_58() {
+    if (jj_scan_token(ACCESS)) return true;
     if (jj_scan_token(IDENTIFIER)) return true;
     return false;
   }
@@ -983,14 +1041,49 @@ public class JustSimpleGrammar implements JustSimpleGrammarConstants {
     return false;
   }
 
+  private boolean jj_3_56() {
+    if (jj_scan_token(NUMBER)) return true;
+    return false;
+  }
+
   private boolean jj_3_1() {
     if (jj_3R_10()) return true;
+    return false;
+  }
+
+  private boolean jj_3_53() {
+    if (jj_3R_24()) return true;
     return false;
   }
 
   private boolean jj_3R_18() {
     if (jj_scan_token(IDENTIFIER)) return true;
     if (jj_scan_token(ASSIGNMENT)) return true;
+    return false;
+  }
+
+  private boolean jj_3_55() {
+    if (jj_scan_token(IDENTIFIER)) return true;
+    return false;
+  }
+
+  private boolean jj_3_57() {
+    if (jj_scan_token(BRACETS_OPEN)) return true;
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3_55()) {
+    jj_scanpos = xsp;
+    if (jj_3_56()) return true;
+    }
+    return false;
+  }
+
+  private boolean jj_3_54() {
+    if (jj_scan_token(BRACE_OPEN)) return true;
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3_53()) jj_scanpos = xsp;
+    if (jj_scan_token(BRACE_CLOSE)) return true;
     return false;
   }
 
@@ -1016,11 +1109,6 @@ public class JustSimpleGrammar implements JustSimpleGrammarConstants {
 
   private boolean jj_3_25() {
     if (jj_3R_20()) return true;
-    return false;
-  }
-
-  private boolean jj_3_53() {
-    if (jj_3R_24()) return true;
     return false;
   }
 
@@ -1059,20 +1147,8 @@ public class JustSimpleGrammar implements JustSimpleGrammarConstants {
     return false;
   }
 
-  private boolean jj_3_61() {
-    if (jj_scan_token(BRACE_OPEN)) return true;
-    if (jj_3R_25()) return true;
-    return false;
-  }
-
   private boolean jj_3_22() {
     if (jj_3R_17()) return true;
-    return false;
-  }
-
-  private boolean jj_3_58() {
-    if (jj_scan_token(ACCESS)) return true;
-    if (jj_scan_token(IDENTIFIER)) return true;
     return false;
   }
 
@@ -1091,13 +1167,17 @@ public class JustSimpleGrammar implements JustSimpleGrammarConstants {
     return false;
   }
 
-  private boolean jj_3_56() {
-    if (jj_scan_token(NUMBER)) return true;
-    return false;
-  }
-
-  private boolean jj_3_55() {
+  private boolean jj_3_60() {
     if (jj_scan_token(IDENTIFIER)) return true;
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3_54()) jj_scanpos = xsp;
+    xsp = jj_scanpos;
+    if (jj_3_57()) jj_scanpos = xsp;
+    while (true) {
+      xsp = jj_scanpos;
+      if (jj_3_58()) { jj_scanpos = xsp; break; }
+    }
     return false;
   }
 
@@ -1114,40 +1194,6 @@ public class JustSimpleGrammar implements JustSimpleGrammarConstants {
 
   private boolean jj_3_19() {
     if (jj_scan_token(BY_REF)) return true;
-    return false;
-  }
-
-  private boolean jj_3_57() {
-    if (jj_scan_token(BRACETS_OPEN)) return true;
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3_55()) {
-    jj_scanpos = xsp;
-    if (jj_3_56()) return true;
-    }
-    return false;
-  }
-
-  private boolean jj_3_54() {
-    if (jj_scan_token(BRACE_OPEN)) return true;
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3_53()) jj_scanpos = xsp;
-    if (jj_scan_token(BRACE_CLOSE)) return true;
-    return false;
-  }
-
-  private boolean jj_3_60() {
-    if (jj_scan_token(IDENTIFIER)) return true;
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3_54()) jj_scanpos = xsp;
-    xsp = jj_scanpos;
-    if (jj_3_57()) jj_scanpos = xsp;
-    while (true) {
-      xsp = jj_scanpos;
-      if (jj_3_58()) { jj_scanpos = xsp; break; }
-    }
     return false;
   }
 
@@ -1169,15 +1215,6 @@ public class JustSimpleGrammar implements JustSimpleGrammarConstants {
     return false;
   }
 
-  private boolean jj_3_18() {
-    if (jj_scan_token(SEPERATOR)) return true;
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3_19()) jj_scanpos = xsp;
-    if (jj_3R_16()) return true;
-    return false;
-  }
-
   private boolean jj_3_52() {
     if (jj_scan_token(NOT)) return true;
     return false;
@@ -1191,8 +1228,12 @@ public class JustSimpleGrammar implements JustSimpleGrammarConstants {
     return false;
   }
 
-  private boolean jj_3_16() {
-    if (jj_3R_15()) return true;
+  private boolean jj_3_18() {
+    if (jj_scan_token(SEPERATOR)) return true;
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3_19()) jj_scanpos = xsp;
+    if (jj_3R_16()) return true;
     return false;
   }
 
@@ -1203,6 +1244,11 @@ public class JustSimpleGrammar implements JustSimpleGrammarConstants {
 
   private boolean jj_3_50() {
     if (jj_scan_token(MUL)) return true;
+    return false;
+  }
+
+  private boolean jj_3_16() {
+    if (jj_3R_15()) return true;
     return false;
   }
 
@@ -1217,6 +1263,16 @@ public class JustSimpleGrammar implements JustSimpleGrammarConstants {
     return false;
   }
 
+  private boolean jj_3R_29() {
+    if (jj_3R_30()) return true;
+    Token xsp;
+    while (true) {
+      xsp = jj_scanpos;
+      if (jj_3_49()) { jj_scanpos = xsp; break; }
+    }
+    return false;
+  }
+
   private boolean jj_3_17() {
     if (jj_scan_token(BY_REF)) return true;
     return false;
@@ -1228,16 +1284,6 @@ public class JustSimpleGrammar implements JustSimpleGrammarConstants {
     if (jj_3_17()) jj_scanpos = xsp;
     if (jj_3R_16()) return true;
     if (jj_scan_token(IDENTIFIER)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_29() {
-    if (jj_3R_30()) return true;
-    Token xsp;
-    while (true) {
-      xsp = jj_scanpos;
-      if (jj_3_49()) { jj_scanpos = xsp; break; }
-    }
     return false;
   }
 
@@ -1294,14 +1340,14 @@ public class JustSimpleGrammar implements JustSimpleGrammarConstants {
     return false;
   }
 
-  private boolean jj_3R_31() {
-    if (jj_3R_16()) return true;
-    if (jj_scan_token(IDENTIFIER)) return true;
+  private boolean jj_3_41() {
+    if (jj_scan_token(GREATER_OR_EQUAL)) return true;
     return false;
   }
 
-  private boolean jj_3_41() {
-    if (jj_scan_token(GREATER_OR_EQUAL)) return true;
+  private boolean jj_3R_31() {
+    if (jj_3R_16()) return true;
+    if (jj_scan_token(IDENTIFIER)) return true;
     return false;
   }
 
@@ -1331,18 +1377,8 @@ public class JustSimpleGrammar implements JustSimpleGrammarConstants {
     return false;
   }
 
-  private boolean jj_3R_12() {
-    if (jj_3R_31()) return true;
-    return false;
-  }
-
   private boolean jj_3_36() {
     if (jj_scan_token(EQUAL)) return true;
-    return false;
-  }
-
-  private boolean jj_3_15() {
-    if (jj_3R_14()) return true;
     return false;
   }
 
@@ -1369,11 +1405,21 @@ public class JustSimpleGrammar implements JustSimpleGrammarConstants {
     return false;
   }
 
+  private boolean jj_3R_12() {
+    if (jj_3R_31()) return true;
+    return false;
+  }
+
   private boolean jj_3R_27() {
     if (jj_3R_28()) return true;
     Token xsp;
     xsp = jj_scanpos;
     if (jj_3_42()) jj_scanpos = xsp;
+    return false;
+  }
+
+  private boolean jj_3_15() {
+    if (jj_3R_14()) return true;
     return false;
   }
 
@@ -1393,6 +1439,12 @@ public class JustSimpleGrammar implements JustSimpleGrammarConstants {
     return false;
   }
 
+  private boolean jj_3_34() {
+    if (jj_scan_token(OR)) return true;
+    if (jj_3R_26()) return true;
+    return false;
+  }
+
   private boolean jj_3R_11() {
     if (jj_3R_16()) return true;
     if (jj_scan_token(IDENTIFIER)) return true;
@@ -1400,17 +1452,6 @@ public class JustSimpleGrammar implements JustSimpleGrammarConstants {
     xsp = jj_scanpos;
     if (jj_3_15()) jj_scanpos = xsp;
     if (jj_scan_token(STATEMENT_CLOSE)) return true;
-    return false;
-  }
-
-  private boolean jj_3_34() {
-    if (jj_scan_token(OR)) return true;
-    if (jj_3R_26()) return true;
-    return false;
-  }
-
-  private boolean jj_3_6() {
-    if (jj_scan_token(NUMBER)) return true;
     return false;
   }
 
@@ -1429,6 +1470,16 @@ public class JustSimpleGrammar implements JustSimpleGrammarConstants {
     return false;
   }
 
+  private boolean jj_3_6() {
+    if (jj_scan_token(NUMBER)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_25() {
+    if (jj_3R_33()) return true;
+    return false;
+  }
+
   private boolean jj_3R_13() {
     if (jj_scan_token(NEW)) return true;
     if (jj_3R_16()) return true;
@@ -1440,8 +1491,12 @@ public class JustSimpleGrammar implements JustSimpleGrammarConstants {
     return false;
   }
 
-  private boolean jj_3R_25() {
-    if (jj_3R_33()) return true;
+  private boolean jj_3R_22() {
+    if (jj_scan_token(RETURN)) return true;
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3_33()) jj_scanpos = xsp;
+    if (jj_scan_token(STATEMENT_CLOSE)) return true;
     return false;
   }
 
@@ -1460,12 +1515,9 @@ public class JustSimpleGrammar implements JustSimpleGrammarConstants {
     return false;
   }
 
-  private boolean jj_3R_22() {
-    if (jj_scan_token(RETURN)) return true;
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3_33()) jj_scanpos = xsp;
-    if (jj_scan_token(STATEMENT_CLOSE)) return true;
+  private boolean jj_3R_21() {
+    if (jj_scan_token(WHILE)) return true;
+    if (jj_scan_token(BRACE_OPEN)) return true;
     return false;
   }
 
@@ -1486,8 +1538,13 @@ public class JustSimpleGrammar implements JustSimpleGrammarConstants {
     return false;
   }
 
-  private boolean jj_3R_21() {
-    if (jj_scan_token(WHILE)) return true;
+  private boolean jj_3_30() {
+    if (jj_3R_24()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_20() {
+    if (jj_scan_token(IF)) return true;
     if (jj_scan_token(BRACE_OPEN)) return true;
     return false;
   }
@@ -1514,11 +1571,6 @@ public class JustSimpleGrammar implements JustSimpleGrammarConstants {
     return false;
   }
 
-  private boolean jj_3_30() {
-    if (jj_3R_24()) return true;
-    return false;
-  }
-
   private boolean jj_3_8() {
     if (jj_scan_token(NO_RETURN_TYPE)) return true;
     return false;
@@ -1537,9 +1589,19 @@ public class JustSimpleGrammar implements JustSimpleGrammarConstants {
     return false;
   }
 
-  private boolean jj_3R_20() {
-    if (jj_scan_token(IF)) return true;
-    if (jj_scan_token(BRACE_OPEN)) return true;
+  private boolean jj_3_31() {
+    if (jj_scan_token(SEPERATOR)) return true;
+    if (jj_3R_25()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_24() {
+    if (jj_3R_25()) return true;
+    Token xsp;
+    while (true) {
+      xsp = jj_scanpos;
+      if (jj_3_31()) { jj_scanpos = xsp; break; }
+    }
     return false;
   }
 
@@ -1559,22 +1621,6 @@ public class JustSimpleGrammar implements JustSimpleGrammarConstants {
     if (jj_3_4()) {
     jj_scanpos = xsp;
     if (jj_3_5()) return true;
-    }
-    return false;
-  }
-
-  private boolean jj_3_31() {
-    if (jj_scan_token(SEPERATOR)) return true;
-    if (jj_3R_25()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_24() {
-    if (jj_3R_25()) return true;
-    Token xsp;
-    while (true) {
-      xsp = jj_scanpos;
-      if (jj_3_31()) { jj_scanpos = xsp; break; }
     }
     return false;
   }

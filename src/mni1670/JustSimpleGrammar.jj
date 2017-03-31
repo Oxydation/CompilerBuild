@@ -18,41 +18,40 @@ import utils.Symbol.*;
 public class JustSimpleGrammar
 {
   public static SymbolTable symbolTable;
+
   public static void main(String args []) throws ParseException
   {
     try
     {
       symbolTable = new SymbolTable();
-      
       JustSimpleGrammar parser = new JustSimpleGrammar(new FileInputStream("code.txt"));
-   
-        System.out.println("Reading ...");
-        try
+      System.out.println("Reading ...");
+      try
+      {
+        switch (parser.start())
         {
-          switch (parser.start())
-          {
-            case 0:
-            System.out.println("Finished");
-            symbolTable.printSymbols();
-            break;
-            case 1:            
-            System.out.println("Finished");
-            symbolTable.printSymbols();
-            break;
-          }
+          case 0 : 
+          System.out.println("Finished");
+          symbolTable.printSymbols();
+          break;
+          case 1 : 
+          System.out.println("Finished");
+          symbolTable.printSymbols();
+          break;
         }
-        catch (Exception e)
-        {
-          e.printStackTrace();
-          System.out.println("Could not parse input.");
-          System.out.println(e.getMessage());
-        }
-        catch (Error e)
-        {
-            e.printStackTrace();
-          System.out.println("Oops.");
-          System.out.println(e.getMessage());
-        }      
+      }
+      catch (Exception e)
+      {
+        e.printStackTrace();
+        System.out.println("Could not parse input.");
+        System.out.println(e.getMessage());
+      }
+      catch (Error e)
+      {
+        e.printStackTrace();
+        System.out.println("Oops.");
+        System.out.println(e.getMessage());
+      }
     }
     catch (Exception ex)
     {
@@ -98,9 +97,9 @@ TOKEN :
 }
 
 /* Values */
-TOKEN:
+TOKEN :
 {
- < TRUE : "true" >
+  < TRUE : "true" >
 | < FALSE : "false" >
 }
 
@@ -165,20 +164,21 @@ int start() :
 
 void compilationUnit() :
 {
-	Symbol symbol;
-	Token token;
+  Symbol symbol;
+  Token token;
 }
 {
-   < PROGRAM >
-  token =  < IDENTIFIER >
- {
-	 symbol = symbolTable.lookup(token.image);
-	 if(symbol == null) {
-	   	symbol = new Symbol();
-	   	symbol.name = token.image;
-	   	symbol.kind = Kind.Undefined;
-		symbolTable.insert(symbol);
-	 }
+  < PROGRAM > 
+  token = < IDENTIFIER >
+  {
+    symbol = symbolTable.lookup(token.image);
+    if (symbol == null)
+    {
+      symbol = new Symbol();
+      symbol.name = token.image;
+      symbol.kind = Kind.Undefined;
+      symbolTable.insert(symbol);
+    }
   }
   < OPEN > definition() < CLOSE >
 }
@@ -186,7 +186,7 @@ void compilationUnit() :
 void definition() :
 {}
 {
-  (    
+  (
     LOOKAHEAD(3)
     varDef()
   | funcDef()
@@ -224,22 +224,23 @@ void arrayInit() :
 
 void varDef() :
 {
-	Symbol symbol;
-	Token token;
+  Symbol symbol;
+  Token token;
 }
 {
-  type()
-  token =  < IDENTIFIER >
- {
-	 symbol = symbolTable.lookup(token.image);
-	 if(symbol == null) {
-	   	symbol = new Symbol();
-	   	symbol.name = token.image;
-	   	symbol.kind = Kind.Variable;
-		symbolTable.insert(symbol);
-	 }
+  type() 
+  token = < IDENTIFIER >
+  {
+    symbol = symbolTable.lookup(token.image);
+    if (symbol == null)
+    {
+      symbol = new Symbol();
+      symbol.name = token.image;
+      symbol.kind = Kind.Variable;
+      symbolTable.insert(symbol);
+    }
   }
-   [ init() ] < STATEMENT_CLOSE >
+  [ init() ] < STATEMENT_CLOSE >
 }
 
 void funcDef() :
@@ -250,52 +251,56 @@ void funcDef() :
 
 void funcHead() :
 {
-	Symbol symbol;
-	Token token;
+  Symbol symbol;
+  Token token;
 }
 {
-  type()
-  token =  < IDENTIFIER >
- {
-	 symbol = symbolTable.lookup(token.image);
-	 if(symbol == null) {
-	   	symbol = new Symbol();
-	   	symbol.name = token.image;
-	   	symbol.kind = Kind.Function;
-		symbolTable.insert(symbol);
-	 }
-  } < BRACE_OPEN > [ formParList() ] < BRACE_CLOSE >
+  type() 
+  token = < IDENTIFIER >
+  {
+    symbol = symbolTable.lookup(token.image);
+    if (symbol == null)
+    {
+      symbol = new Symbol();
+      symbol.name = token.image;
+      symbol.kind = Kind.Function;
+      symbolTable.insert(symbol);
+    }
+  }
+  < BRACE_OPEN > [ formParList() ] < BRACE_CLOSE >
 }
 
 void formParList() :
 {
-	Symbol symbol;
-	Token token;
+  Symbol symbol;
+  Token token;
 }
 {
-  [ < BY_REF > ] type()
-  token =  < IDENTIFIER >
- {
-	 symbol = symbolTable.lookup(token.image);
-	 if(symbol == null) {
-	   	symbol = new Symbol();
-	   	symbol.name = token.image;
-	   	symbol.kind = Kind.Parameter;
-		symbolTable.insert(symbol);
-	 }
+  [ < BY_REF > ] type() 
+  token = < IDENTIFIER >
+  {
+    symbol = symbolTable.lookup(token.image);
+    if (symbol == null)
+    {
+      symbol = new Symbol();
+      symbol.name = token.image;
+      symbol.kind = Kind.Parameter;
+      symbolTable.insert(symbol);
+    }
   }
   (
-    < SEPERATOR > [ < BY_REF > ] type()
-     token =  < IDENTIFIER >
- {
-	 symbol = symbolTable.lookup(token.image);
-	 if(symbol == null) {
-	   	symbol = new Symbol();
-	   	symbol.name = token.image;
-	   	symbol.kind = Kind.Parameter;
-		symbolTable.insert(symbol);
-	 }
-  }
+    < SEPERATOR > [ < BY_REF > ] type() 
+    token = < IDENTIFIER >
+    {
+      symbol = symbolTable.lookup(token.image);
+      if (symbol == null)
+      {
+        symbol = new Symbol();
+        symbol.name = token.image;
+        symbol.kind = Kind.Parameter;
+        symbolTable.insert(symbol);
+      }
+    }
   )*
 }
 
@@ -325,25 +330,25 @@ void stat() :
 
 void assignStat() :
 {
-  	Token token;
-	Symbol symbol;
+  Token token;
+  Symbol symbol;
 }
 {
   token = < IDENTIFIER >
   {
-	 symbol = symbolTable.lookup(token.image);
-	 if(symbol == null) {
-	   	symbol = new Symbol();
-	   	symbol.name = token.image;
-	   	symbol.kind = Kind.Variable;
-		symbolTable.insert(symbol);
-	 }
+    symbol = symbolTable.lookup(token.image);
+    if (symbol == null)
+    {
+      symbol = new Symbol();
+      symbol.name = token.image;
+      symbol.kind = Kind.Variable;
+      symbolTable.insert(symbol);
+    }
   }
-  
-   < ASSIGNMENT > expr() < STATEMENT_CLOSE >
-   {
-		//codeGenerator.emit2(Opcode.ISTORE, symbol.address);
-   }
+  < ASSIGNMENT > expr() < STATEMENT_CLOSE >
+  {
+  //codeGenerator.emit2(Opcode.ISTORE, symbol.address);
+  }
 }
 
 void callStat() :
@@ -356,21 +361,22 @@ void callStat() :
 
 void call() :
 {
-	Symbol symbol;
-	Token token;
+  Symbol symbol;
+  Token token;
 }
 {
-   token =  < IDENTIFIER >
- {
-	 symbol = symbolTable.lookup(token.image);
-	 if(symbol == null) {
-	   	symbol = new Symbol();
-	   	symbol.name = token.image;
-	   	symbol.kind = Kind.Function;
-		symbolTable.insert(symbol);
-	 }
+  token = < IDENTIFIER >
+  {
+    symbol = symbolTable.lookup(token.image);
+    if (symbol == null)
+    {
+      symbol = new Symbol();
+      symbol.name = token.image;
+      symbol.kind = Kind.Function;
+      symbolTable.insert(symbol);
+    }
   }
-   < BRACE_OPEN > [ actParList() ] < BRACE_CLOSE >
+  < BRACE_OPEN > [ actParList() ] < BRACE_CLOSE >
 }
 
 void actParList() :
@@ -481,24 +487,78 @@ void notFact() :
 
 void fact() :
 {
-	Symbol symbol;
-	Token token;
+  Symbol symbol;
+  Token token;
 }
 {
-  < NUMBER >
-| < IDENTIFIER >
+  token = < NUMBER >
+  {
+    symbol = symbolTable.lookup(token.image);
+    if (symbol == null)
+    {
+      symbol = new Symbol();
+      symbol.name = token.image;
+      symbol.kind = Kind.Constant;
+      symbolTable.insert(symbol);
+    }
+  }
+| 
+  token = < IDENTIFIER >
+  {
+    symbol = symbolTable.lookup(token.image);
+    if (symbol == null)
+    {
+      symbol = new Symbol();
+      symbol.name = token.image;
+      symbol.kind = Kind.Variable;
+      symbolTable.insert(symbol);
+    }
+  }
   [
     < BRACE_OPEN > [ actParList() ] < BRACE_CLOSE >
   ]
   [
     < BRACETS_OPEN >
     (
-      < IDENTIFIER >
-    | < NUMBER >
+      token = < IDENTIFIER >
+      {
+        symbol = symbolTable.lookup(token.image);
+        if (symbol == null)
+        {
+          symbol = new Symbol();
+          symbol.name = token.image;
+          symbol.kind = Kind.Variable;
+          symbolTable.insert(symbol);
+        }
+      }
+    | 
+      token = < NUMBER >
+      {
+        symbol = symbolTable.lookup(token.image);
+        if (symbol == null)
+        {
+          symbol = new Symbol();
+          symbol.name = token.image;
+          symbol.kind = Kind.Constant;
+          symbolTable.insert(symbol);
+        }
+      }
     )
     < BRACETS_CLOSE >
   ]
   (
-  < ACCESS > < IDENTIFIER >)*
+    < ACCESS > 
+    token = < IDENTIFIER >
+    {
+      symbol = symbolTable.lookup(token.image);
+      if (symbol == null)
+      {
+        symbol = new Symbol();
+        symbol.name = token.image;
+        symbol.kind = Kind.Variable;
+        symbolTable.insert(symbol);
+      }
+    }
+  )*
 | < BRACE_OPEN > expr() < BRACE_CLOSE >
 }
