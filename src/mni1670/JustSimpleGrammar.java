@@ -6,12 +6,15 @@ import utils.Symbol.*;
 
 public class JustSimpleGrammar implements JustSimpleGrammarConstants {
   public static SymbolTable symbolTable;
+  public static CodeGenerator codeGen;
 
   public static void main(String args []) throws ParseException
   {
     try
     {
       symbolTable = new SymbolTable();
+      codeGen = new CodeGenerator();
+
       JustSimpleGrammar parser = new JustSimpleGrammar(new FileInputStream("code.txt"));
       System.out.println("Reading ...");
       try
@@ -293,7 +296,7 @@ public class JustSimpleGrammar implements JustSimpleGrammarConstants {
     jj_consume_token(ASSIGNMENT);
     expr();
     jj_consume_token(STATEMENT_CLOSE);
-
+        codeGen.emitWithOperand(OpCode.ISTORE, symbol.address);
   }
 
   final public void callStat() throws ParseException {
