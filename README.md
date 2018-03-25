@@ -1,2 +1,2 @@
-# CompilerBuild
-Building a custom compiler with JavaCC.
+# Compiler Build - JustSimple
+Building a custom compiler called JustSimple with JavaCC.
